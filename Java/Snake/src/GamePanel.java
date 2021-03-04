@@ -54,7 +54,6 @@ public class GamePanel extends JPanel implements ActionListener {
         timer = new Timer(DELAY, this);
         timer.start();
     }
-
     
     /** 
      * @param g
@@ -94,7 +93,6 @@ public class GamePanel extends JPanel implements ActionListener {
             gameOver(g);
         }
     }
-
     
     /** 
      * @param g
@@ -196,21 +194,17 @@ public class GamePanel extends JPanel implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(e.getSource() == replay) {
-                    running = true;
-                    bodySize = 5;
-                    applesEaten = 0;
-                    direction = 'R';
-                    replay.setVisible(false);
-                    repaint();
-                    
-                    startGame();
+                    JComponent comp = (JComponent) e.getSource();
+                    Window win = SwingUtilities.getWindowAncestor(comp);
+                    win.dispose();  //It will close the current window
+                    new GameFrame();  //It will create a new game
                 }
             }
         });
     }
 
     /**
-     * @param e An ActionEvent
+     * @param e 
      */
     @Override
     public void actionPerformed(ActionEvent e) {

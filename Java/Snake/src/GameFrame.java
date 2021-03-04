@@ -8,6 +8,8 @@ import javax.swing.JPanel;
  * @author André Clérigo
  */
 public class GameFrame extends JFrame {
+    private static final long serialVersionUID = 691626158617771852L;
+
     GameFrame() {
         JPanel panel = new GamePanel();
         this.add(panel);
@@ -18,5 +20,10 @@ public class GameFrame extends JFrame {
         this.pack();  //Fit JFrame to the components
         this.setVisible(true);
         this.setLocationRelativeTo(null);
+    }
+
+    public void closeGame() {
+        setVisible(false);
+        dispose();
     }
 }
