@@ -1,0 +1,6 @@
+Do a .jar
+Save highscores to a file
+Making a settings section
+
+Making a javadoc with
+javadoc -d 'C:\Users\AndreClerigo\Desktop\Snake\' -sourcepath C:\Users\AndreClerigo\Desktop\ Snake.src
