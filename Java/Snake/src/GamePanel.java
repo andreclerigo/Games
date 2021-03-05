@@ -4,7 +4,10 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import java.util.EmptyStackException;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The classic game Snake on Java!
@@ -16,7 +19,7 @@ public class GamePanel extends JPanel implements ActionListener {
     static final int SCREEN_HEIGHT = 600;  //Window Height
     static final int UNIT_SIZE = 25;  //Square size
     static final int GAME_UNITS = (SCREEN_WIDTH * SCREEN_HEIGHT)/UNIT_SIZE;
-    static final int DELAY = 85;  //Pace of the game
+    static final int DELAY = 80;  //Pace of the game
     static final int BODY = 5;  //Body count at the beginning
 
     //Snake won't be bigger then the game space
@@ -34,6 +37,8 @@ public class GamePanel extends JPanel implements ActionListener {
     Timer timer;
     Random random;
     Font GAMEOVER_FONT;
+    long startTime;
+    InputStream is = this.getClass().getClassLoader().getResourceAsStream("game_over.ttf");
 
     String basePath = new File("").getAbsolutePath();
     JButton replay = new JButton("Play Again");
@@ -71,7 +76,6 @@ public class GamePanel extends JPanel implements ActionListener {
         timer.start();
     }
     
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -220,12 +224,17 @@ public class GamePanel extends JPanel implements ActionListener {
      * @param g graphics used in the game
      */
     public void gameOver(Graphics g) {
+        /* if (is == null) {
+            throw new EmptyStackException();
+        }
+        */
+
         //Game Over text
         g.setColor(Color.RED);
         try {
-            GAMEOVER_FONT = Font.createFont(Font.TRUETYPE_FONT, new File(basePath + "/Snake/lib/font/game_over.ttf")).deriveFont(200f);	
+            GAMEOVER_FONT = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(200f);	
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File(basePath + "/Snake/lib/font/game_over.ttf")));
+            ge.registerFont(GAMEOVER_FONT);
             g.setFont(GAMEOVER_FONT);
         } catch (IOException|FontFormatException e) {
             e.printStackTrace();
@@ -238,7 +247,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
         scoreDisplay(g);
 
-        // Updates the High Score
+        //Updates the High Score
         if(applesEaten > HIGH_SCORE) {  
             HIGH_SCORE = applesEaten;
             highScoreDisplay(g, true);
@@ -246,6 +255,7 @@ public class GamePanel extends JPanel implements ActionListener {
             highScoreDisplay(g, false);
         }
 
+        //Save the game information before closing
         try {
             saveGame("/temp/SnakeGameInformation.ser");
         } catch(Exception e) {
@@ -317,46 +327,50 @@ public class GamePanel extends JPanel implements ActionListener {
          */
         @Override
         public void keyPressed(KeyEvent e) {
-            switch(e.getKeyCode()) {
-                case KeyEvent.VK_LEFT:
-                                    if(direction != 'R')
-                                        direction = 'L';
-                                    break;
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            if(elapsedTime > DELAY-15) {
+                startTime = System.currentTimeMillis();
+                switch(e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT:
+                                        if(direction != 'R')
+                                            direction = 'L';
+                                        break;
 
-                case KeyEvent.VK_A:
-                                    if(direction != 'R')
-                                        direction = 'L';
-                                    break;
+                    case KeyEvent.VK_A:
+                                        if(direction != 'R')
+                                            direction = 'L';
+                                        break;
 
-                case KeyEvent.VK_RIGHT:
-                                    if(direction != 'L')
-                                        direction = 'R';
-                                    break;
+                    case KeyEvent.VK_RIGHT:
+                                        if(direction != 'L')
+                                            direction = 'R';
+                                        break;
 
-                case KeyEvent.VK_D:
-                                    if(direction != 'L')
-                                        direction = 'R';
-                                    break;
+                    case KeyEvent.VK_D:
+                                        if(direction != 'L')
+                                            direction = 'R';
+                                        break;
 
-                case KeyEvent.VK_UP:
-                                    if(direction != 'D')
-                                        direction = 'U';
-                                    break;
+                    case KeyEvent.VK_UP:
+                                        if(direction != 'D')
+                                            direction = 'U';
+                                        break;
 
-                case KeyEvent.VK_W:
-                                    if(direction != 'D')
-                                        direction = 'U';
-                                    break;
+                    case KeyEvent.VK_W:
+                                        if(direction != 'D')
+                                            direction = 'U';
+                                        break;
 
-                case KeyEvent.VK_DOWN:
-                                    if(direction != 'U')
-                                        direction = 'D';
-                                    break;
-                
-                case KeyEvent.VK_S:
-                                    if(direction != 'U')
-                                        direction = 'D';
-                                    break;
+                    case KeyEvent.VK_DOWN:
+                                        if(direction != 'U')
+                                            direction = 'D';
+                                        break;
+                    
+                    case KeyEvent.VK_S:
+                                        if(direction != 'U')
+                                            direction = 'D';
+                                        break;
+                }
             }
         }
     }
