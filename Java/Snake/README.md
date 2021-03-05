@@ -11,7 +11,7 @@ Snake
 │   └── SnakeGame.java  
  
 # Version
-Built with java version LTS 11.0.10  
+Built with JDK version LTS 11.0.10  
 
 # Compiling and Building
 Change whatever properties you want inside the GamePanel.java such as Delay(Pace of the game), Screen Width/Height, Square Size and inital body size  
