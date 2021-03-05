@@ -2,6 +2,7 @@ package Snake.src;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import javax.swing.*;
 import java.util.Random;
 
@@ -15,7 +16,7 @@ public class GamePanel extends JPanel implements ActionListener {
     static final int SCREEN_HEIGHT = 600;
     static final int UNIT_SIZE = 25;
     static final int GAME_UNITS = (SCREEN_WIDTH * SCREEN_HEIGHT)/UNIT_SIZE;
-    static final int DELAY = 80;
+    static final int DELAY = 90;  //Pace of the game
     static final int BODY = 5;
 
     //Snake won't be bigger then the game space
@@ -26,14 +27,27 @@ public class GamePanel extends JPanel implements ActionListener {
     int applesEaten;
     int appleX;
     int appleY;
+    int HIGH_SCORE;
     char direction = 'R';
     boolean running = false;    
     Timer timer;
     Random random;
+    boolean settingLines = true;
 
     JButton replay = new JButton("Play Again");
 
+    /**
+     * At the beginning it retrieves information from the Serialization and if this exists the game will use the High Score stored in there
+     * Starts the window with the correct dimensions and starts the game
+     */
     GamePanel() {
+        try {
+            GamePanel g = rescueGame("/temp/SnakeGameInformation.ser");
+            HIGH_SCORE = g.HIGH_SCORE;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        
         random = new Random();
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(Color.BLACK);
@@ -41,12 +55,12 @@ public class GamePanel extends JPanel implements ActionListener {
         this.addKeyListener(new MyKeyAdapter());
         this.add(replay);
         replay.setVisible(false);
-        replay.setBounds(100,100,100,100);
+        replay.setBounds(SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT - 130, 100, 60);
         startGame();
     }
 
     /**
-     * 
+     * Starts the game and spawns an apple
      */
     public void startGame() {
         spawnApple();
@@ -55,9 +69,7 @@ public class GamePanel extends JPanel implements ActionListener {
         timer.start();
     }
     
-    /** 
-     * @param g
-     */
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -65,14 +77,17 @@ public class GamePanel extends JPanel implements ActionListener {
     }
     
     /**
-     * 
-     * @param g
+     * Calls the gameOver functions when the game isn't running anymore and also paints the snake blocks
+     * Also this method is used to paint lines to guide the user (if wanted)
+     * @param g graphics used in the game
      */
     public void draw(Graphics g) {
         if(running) {
-            for(int i = 0; i < SCREEN_HEIGHT/UNIT_SIZE; i++) {
-                g.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, SCREEN_HEIGHT);  // Draws line from top to bottom
-                g.drawLine(0, i*UNIT_SIZE, SCREEN_WIDTH, i*UNIT_SIZE);  // Draws line from left to right
+            if (settingLines) {
+                for(int i = 0; i < SCREEN_HEIGHT/UNIT_SIZE; i++) {
+                    g.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, SCREEN_HEIGHT);  // Draws line from top to bottom
+                    g.drawLine(0, i*UNIT_SIZE, SCREEN_WIDTH, i*UNIT_SIZE);  // Draws line from left to right
+                }
             }
 
             g.setColor(Color.RED);
@@ -95,7 +110,8 @@ public class GamePanel extends JPanel implements ActionListener {
     }
     
     /** 
-     * @param g
+     * Displays the players actual score on the top of the screen
+     * @param g graphics used in the game
      */
     public void scoreDisplay(Graphics g) {
         //Drawing apple count
@@ -107,7 +123,24 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     /**
-     * 
+     * Displays the player High Score at game over
+     * @param g graphics used in the game
+     * @param newHS used to see if it's a new High Score
+     */
+    public void highScoreDisplay(Graphics g, boolean newHS) {
+        //Drawing High Score
+        g.setColor(Color.YELLOW);
+        g.setFont(new Font("Arial", Font.BOLD, 40));
+        FontMetrics metrics = getFontMetrics(g.getFont());
+        //Center the text
+        if(!newHS)
+            g.drawString("High Score: " + HIGH_SCORE, (SCREEN_WIDTH - metrics.stringWidth("High Score: " + HIGH_SCORE))/2, g.getFont().getSize() *2);
+        else
+            g.drawString("New High Score: " + HIGH_SCORE, (SCREEN_WIDTH - metrics.stringWidth("New High Score: " + HIGH_SCORE))/2, g.getFont().getSize() *2);
+    }
+
+    /**
+     * Spawns a new apple randomly in the game
      */
     public void spawnApple() {
         appleX = random.nextInt((int)SCREEN_WIDTH/UNIT_SIZE) * UNIT_SIZE;
@@ -115,14 +148,16 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     /**
-     * 
+     * Moves the snake head and body
      */
     public void move() {
+        //Body movement
         for(int i = bodySize; i > 0; i--) {
             x[i] = x[i-1];
             y[i] = y[i-1];
         }
-
+        
+        //Head movement
         switch(direction) {
             case 'U': 
                     y[0] = y[0] - UNIT_SIZE;
@@ -143,7 +178,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     /**
-     * This method checks if the Snake has eaten the apple
+     * This method checks if the Snake has eaten the apple, if so the snake gets bigger, the score increases and another apple is spawned
      */
     public void checkApple() {
         if((x[0] == appleX) && (y[0] == appleY)) {
@@ -152,7 +187,10 @@ public class GamePanel extends JPanel implements ActionListener {
             bodySize++;
         }
     }
-
+    
+    /**
+     * This function will check collisions beteween the snake's head with the body and all the borders of the screen
+     */
     public void checkCollisions() {
         //Check head collision with body
         for(int i = bodySize; i > 0; i--) {
@@ -160,7 +198,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 running = false;
         }
 
-        //Check head touch lefr border
+        //Check head touch lefy border
         if(x[0] < 0) running = false;
         
         //Check head touch right border
@@ -176,7 +214,8 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     /** 
-     * @param g
+     * Displays the GAME OVER text with the current score, high score of the user and a button to play again
+     * @param g graphics used in the game
      */
     public void gameOver(Graphics g) {
         //Game Over text
@@ -188,7 +227,21 @@ public class GamePanel extends JPanel implements ActionListener {
 
         scoreDisplay(g);
 
-        // Botao de play again
+        // Updates the High Score
+        if(applesEaten > HIGH_SCORE) {  
+            HIGH_SCORE = applesEaten;
+            highScoreDisplay(g, true);
+        } else {
+            highScoreDisplay(g, false);
+        }
+
+        try {
+            saveGame("/temp/SnakeGameInformation.ser");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        //Play again button
         replay.setVisible(true);
         replay.addActionListener(new ActionListener() {
             @Override
@@ -204,7 +257,8 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     /**
-     * @param e 
+     * Everytime there an action it moves the snake and checks for collisions if the game isn't over it will repaint the game
+     * @param e ActionEvent performed by the user
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -216,6 +270,29 @@ public class GamePanel extends JPanel implements ActionListener {
         repaint();
     }
     
+    /**
+     * Saves the game information in the temp folder
+     * @param file the path used to store the information for the game
+     * @throws IOException
+     */
+    public void saveGame(String file) throws IOException {
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+        out.writeObject(this);
+        out.close();
+    }
+
+    /**
+     * Returns an object that contains the game information
+     * @param file the path used to retreive the information for the game
+     * @return returns an object of GamePanel type with all the information of the previous game
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public GamePanel rescueGame(String file) throws IOException, ClassNotFoundException {
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+		return (GamePanel)in.readObject();
+    }
+
     /**
      * KeyAdaptater that accpets input form W,A,S,D and Arrows
      */
