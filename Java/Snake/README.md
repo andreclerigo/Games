@@ -4,7 +4,7 @@ This repository contains all the files and documentation needed to create the Sn
 The executable file is .jar (Not working for LINUX)  
 Snake  
 ├── build  
-|   └── Game.jar  
+│   └── Game.jar  
 ├── src  
 │   ├── GameFrame.java  
 │   ├── GamePanel.java  
