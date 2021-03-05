@@ -1,8 +1,9 @@
 package Snake.src;
 
+import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
+import java.awt.font.*;
 import javax.swing.*;
 import java.util.Random;
 
@@ -220,7 +221,10 @@ public class GamePanel extends JPanel implements ActionListener {
     public void gameOver(Graphics g) {
         //Game Over text
         g.setColor(Color.RED);
-        g.setFont(new Font("Arial", Font.BOLD, 75));
+        Font font = new Font("../lib/font/game_over.ttf", Font.PLAIN, 75);
+        //Font f = new Font(font, 75);
+        //new Font("Arial", Font.BOLD, 75)
+        g.setFont(font);
         FontMetrics metrics = getFontMetrics(g.getFont());
         //Center the text
         g.drawString("GAME OVER", (SCREEN_WIDTH - metrics.stringWidth("GAME OVER"))/2, SCREEN_HEIGHT/2);
