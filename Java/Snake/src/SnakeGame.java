@@ -1,7 +1,7 @@
 package Snake.src;
 
 public class SnakeGame {
-    /** 
+    /**
      * Starts the game
      * @param args the command line arguments - unused
      * @throws Exception

@@ -1,5 +1,4 @@
-Do a .jar
-https://stackoverflow.com/questions/9941296/how-do-i-make-a-jar-from-a-java-file
+Support for LINUX
 
 Making a settings section?
 

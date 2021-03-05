@@ -12,17 +12,18 @@ import java.util.Random;
  */
 public class GamePanel extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1181129953415591504L;
-    static final int SCREEN_WIDTH = 600;
-    static final int SCREEN_HEIGHT = 600;
-    static final int UNIT_SIZE = 25;
+    static final int SCREEN_WIDTH = 600;  //Window Width
+    static final int SCREEN_HEIGHT = 600;  //Window Height
+    static final int UNIT_SIZE = 25;  //Square size
     static final int GAME_UNITS = (SCREEN_WIDTH * SCREEN_HEIGHT)/UNIT_SIZE;
-    static final int DELAY = 90;  //Pace of the game
-    static final int BODY = 5;
+    static final int DELAY = 85;  //Pace of the game
+    static final int BODY = 5;  //Body count at the beginning
 
     //Snake won't be bigger then the game space
     final int x[] = new int[GAME_UNITS];  
     final int y[] = new int[GAME_UNITS];
 
+    boolean grid = true;  //Show a grid in-game
     int bodySize = BODY;
     int applesEaten;
     int appleX;
@@ -32,8 +33,7 @@ public class GamePanel extends JPanel implements ActionListener {
     boolean running = false;    
     Timer timer;
     Random random;
-    boolean settingLines = true;
-
+    
     JButton replay = new JButton("Play Again");
 
     /**
@@ -83,7 +83,7 @@ public class GamePanel extends JPanel implements ActionListener {
      */
     public void draw(Graphics g) {
         if(running) {
-            if (settingLines) {
+            if (grid) {
                 for(int i = 0; i < SCREEN_HEIGHT/UNIT_SIZE; i++) {
                     g.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, SCREEN_HEIGHT);  // Draws line from top to bottom
                     g.drawLine(0, i*UNIT_SIZE, SCREEN_WIDTH, i*UNIT_SIZE);  // Draws line from left to right
@@ -192,23 +192,23 @@ public class GamePanel extends JPanel implements ActionListener {
      * This function will check collisions beteween the snake's head with the body and all the borders of the screen
      */
     public void checkCollisions() {
+        //Check head touch right border
+        if(x[0] >= SCREEN_WIDTH) running = false;
+
+        //Check head touch top border
+        if(y[0] < 0) running = false;
+
+        //Check head touch bottom border
+        if(y[0] >= SCREEN_HEIGHT) running = false;
+
+        //Check head touch left border
+        if(x[0] < 0) running = false;
+        
         //Check head collision with body
         for(int i = bodySize; i > 0; i--) {
             if((x[0] == x[i]) && (y[0] == y[i]))
                 running = false;
         }
-
-        //Check head touch lefy border
-        if(x[0] < 0) running = false;
-        
-        //Check head touch right border
-        if(x[0] > SCREEN_WIDTH) running = false;
-
-        //Check head touch bottom border
-        if(y[0] > SCREEN_HEIGHT) running = false;
-
-        //Check head touch top border
-        if(y[0] < 0) running = false;
 
         if(!running) timer.stop();
     }
@@ -264,8 +264,8 @@ public class GamePanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(running) {
             move();
-            checkApple();
             checkCollisions();
+            checkApple();
         }
         repaint();
     }
