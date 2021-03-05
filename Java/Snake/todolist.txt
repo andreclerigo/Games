@@ -1,9 +1,9 @@
-Support for LINUX
-
-Making a settings section?
-
 Making a javadoc with
 javadoc -d 'C:\Users\AndreClerigo\Desktop\Snake\' -sourcepath C:\Users\AndreClerigo\Desktop\ Snake.src
 
 Play again button with image
 https://stackoverflow.com/questions/8235991/how-to-create-a-custom-jbutton-in-java-with-an-image-base
+
+Support for Linux?
+
+Settings section

@@ -226,13 +226,12 @@ public class GamePanel extends JPanel implements ActionListener {
             GAMEOVER_FONT = Font.createFont(Font.TRUETYPE_FONT, new File(basePath + "/Snake/lib/font/game_over.ttf")).deriveFont(200f);	
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File(basePath + "/Snake/lib/font/game_over.ttf")));
-            
+            g.setFont(GAMEOVER_FONT);
         } catch (IOException|FontFormatException e) {
             e.printStackTrace();
+            g.setFont(new Font("Segoe UI Black", Font.BOLD, 75));
         }
 
-        //g.setFont(new Font("Times New Roman", Font.BOLD, 75));
-        g.setFont(GAMEOVER_FONT);
         FontMetrics metrics = getFontMetrics(g.getFont());
         //Center the text
         g.drawString("GAME OVER", (SCREEN_WIDTH - metrics.stringWidth("GAME OVER"))/2, SCREEN_HEIGHT/2);
