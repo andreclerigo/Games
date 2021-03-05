@@ -282,6 +282,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     /**
+     * /**
      * Returns an object that contains the game information
      * @param file the path used to retreive the information for the game
      * @return returns an object of GamePanel type with all the information of the previous game
@@ -290,7 +291,9 @@ public class GamePanel extends JPanel implements ActionListener {
      */
     public GamePanel rescueGame(String file) throws IOException, ClassNotFoundException {
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
-		return (GamePanel)in.readObject();
+		GamePanel g = (GamePanel)in.readObject();
+        in.close();
+        return g;
     }
 
     /**
