@@ -3,7 +3,6 @@ package Snake.src;
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.font.*;
 import javax.swing.*;
 import java.util.Random;
 
@@ -34,7 +33,9 @@ public class GamePanel extends JPanel implements ActionListener {
     boolean running = false;    
     Timer timer;
     Random random;
-    
+    Font GAMEOVER_FONT;
+
+    String basePath = new File("").getAbsolutePath();
     JButton replay = new JButton("Play Again");
 
     /**
@@ -221,10 +222,17 @@ public class GamePanel extends JPanel implements ActionListener {
     public void gameOver(Graphics g) {
         //Game Over text
         g.setColor(Color.RED);
-        Font font = new Font("../lib/font/game_over.ttf", Font.PLAIN, 75);
-        //Font f = new Font(font, 75);
-        //new Font("Arial", Font.BOLD, 75)
-        g.setFont(font);
+        try {
+            GAMEOVER_FONT = Font.createFont(Font.TRUETYPE_FONT, new File(basePath + "/Snake/lib/font/game_over.ttf")).deriveFont(200f);	
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File(basePath + "/Snake/lib/font/game_over.ttf")));
+            
+        } catch (IOException|FontFormatException e) {
+            e.printStackTrace();
+        }
+
+        //g.setFont(new Font("Times New Roman", Font.BOLD, 75));
+        g.setFont(GAMEOVER_FONT);
         FontMetrics metrics = getFontMetrics(g.getFont());
         //Center the text
         g.drawString("GAME OVER", (SCREEN_WIDTH - metrics.stringWidth("GAME OVER"))/2, SCREEN_HEIGHT/2);

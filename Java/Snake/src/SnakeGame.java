@@ -1,5 +1,7 @@
 package Snake.src;
 
+import java.nio.file.*;
+
 public class SnakeGame {
     /**
      * Starts the game
@@ -8,6 +10,13 @@ public class SnakeGame {
      * @author André Clérigo
      */
     public static void main(String[] args) throws Exception {
+        Path path = Paths.get("/temp/");
+        try {
+            if (!Files.exists(path))
+                Files.createDirectory(path);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         new GameFrame();
     }
 }

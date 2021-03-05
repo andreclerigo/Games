@@ -18,7 +18,7 @@ Change whatever properties you want inside the GamePanel.java such as Delay(Pace
 Delete the build folder  
 Go inside the Snake/src folder and do `javac -d ./build *.java`  
 Download the manifest.mf and keep the 2 empty lines after the text  
-Then do `jar -cvmf manifest.mf Game.jar Snake/src/*.class`  
+Then do `jar -cvmf manifest.mf Game.jar Snake/src/*.class Snake/lib/`  
 It's done your Game.jar executes the Snake Game  
   
 With VSCode  
