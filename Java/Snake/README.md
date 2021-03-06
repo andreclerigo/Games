@@ -1,11 +1,14 @@
 # The Snake Game in Java
 
-This repository contains all the files and documentation needed to create the Snake Game (This version doesn't support LINUX)
+This repository contains all the files and documentation needed to create the Snake Game
+![](https://i.imgur.com/twBdVIz.gif)  
 # Executable
 
 The executable file is .jar
 <pre>
 Snake  
+├── docs  
+│   └── my javadocs
 ├── lib  
 │   ├── font  
 │   │   ├── Premier2019-rPv9.ttf  
