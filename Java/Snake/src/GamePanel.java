@@ -118,6 +118,8 @@ public class GamePanel extends JPanel implements ActionListener {
     
     @Override
     protected void paintComponent(Graphics g) {
+        if(linux)
+            Toolkit.getDefaultToolkit().sync();
         super.paintComponent(g);
         draw(g);
     }
