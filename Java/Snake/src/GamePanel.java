@@ -17,8 +17,8 @@ public class GamePanel extends JPanel implements ActionListener {
     static final int SCREEN_HEIGHT = 600;  //Window Height
     static final int UNIT_SIZE = 25;  //Square size
     static final int GAME_UNITS = (SCREEN_WIDTH * SCREEN_HEIGHT)/UNIT_SIZE;
-    static final int DELAY = 80;  //Pace of the game
-    static final int BODY = 5;  //Body count at the beginning
+    static final int DELAY = 85;  //Pace of the game
+    static final int BODY = 4;  //Body count at the beginning
 
     //Snake won't be bigger then the game space
     final int x[] = new int[GAME_UNITS];  
@@ -127,10 +127,10 @@ public class GamePanel extends JPanel implements ActionListener {
 
             for(int i = 0; i < bodySize; i++) {
                 if(i != 0) {
-                    g.setColor(new Color(45, 180, 0));
+                    g.setColor(new Color(0, 128, 0));
                     g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
                 } else {
-                    g.setColor(Color.GREEN);
+                    g.setColor(new Color(50, 205, 50));  //Color.GREEN
                     g.fillRect(x[0], y[0], UNIT_SIZE, UNIT_SIZE);
                 }
             }
@@ -332,7 +332,7 @@ public class GamePanel extends JPanel implements ActionListener {
         @Override
         public void keyPressed(KeyEvent e) {
             long elapsedTime = System.currentTimeMillis() - startTime;
-            if(elapsedTime > DELAY-15) {
+            if(elapsedTime > DELAY-12) {
                 startTime = System.currentTimeMillis();
                 switch(e.getKeyCode()) {
                     case KeyEvent.VK_LEFT:

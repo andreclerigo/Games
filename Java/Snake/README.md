@@ -1,22 +1,28 @@
 # The Snake Game in Java
+
 This repository contains all the files and documentation needed to create the Snake Game (This version doesn't support LINUX)
 # Executable
+
 The executable file is .jar
-Snake   
+Snake  
 ├── lib  
 │   └── font
 │   │   ├── Premier2019-rPv9.ttf  
 │   │   └── game_over.tff  
+├── img
+│   └── playagain.png  
 ├── src  
 │   ├── GameFrame.java  
 │   ├── GamePanel.java  
 │   └── SnakeGame.java  
 └── Game.jar
- 
+
 # Version
+
 Built with JDK version LTS 11.0.10  
 
 # Compiling and Building
+
 Change whatever properties you want inside the GamePanel.java such as Delay(Pace of the game), Screen Width/Height, Square Size and inital body size  
 Delete the build folder  
 Go inside the Snake/src folder and do `javac -d ./../build *.java`  
