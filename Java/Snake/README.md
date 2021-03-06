@@ -1,6 +1,6 @@
 # The Snake Game in Java
 
-This repository contains all the files and documentation needed to create the Snake Game (This version doesn't support LINUX)
+This repository contains all the files and documentation needed to create the Snake Game
 # Executable
 
 The executable file is .jar
