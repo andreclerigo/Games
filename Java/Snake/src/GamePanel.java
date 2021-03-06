@@ -3,6 +3,7 @@ package Snake.src;
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.Random;
 
@@ -35,7 +36,7 @@ public class GamePanel extends JPanel implements ActionListener {
     long startTime;
 
     String basePath = new File("").getAbsolutePath();
-    JButton replay = new JButton("Play Again");
+    JButton replay; //= new JButton("Play Again");
 
     /**
      * At the beginning it retrieves information from the Serialization and if this exists the game will use the High Score stored in there
@@ -48,8 +49,14 @@ public class GamePanel extends JPanel implements ActionListener {
         } catch(Exception e) {
             e.printStackTrace();
         }
-
+        
         try {
+            InputStream is_replay = this.getClass().getResourceAsStream("/Snake/lib/img/playagain.png");
+            ImageIcon icon = new ImageIcon(ImageIO.read(is_replay));
+            replay = new JButton(icon);
+            replay.setBorder(BorderFactory.createEmptyBorder());
+            replay.setContentAreaFilled(false);
+
             InputStream is_game_over = this.getClass().getResourceAsStream("/Snake/lib/font/game_over.ttf");
             InputStream is_Premier = this.getClass().getResourceAsStream("/Snake/lib/font/Premier2019-rPv9.ttf");
             GAMEOVER_FONT = Font.createFont(Font.TRUETYPE_FONT, is_game_over).deriveFont(200f);
@@ -58,17 +65,30 @@ public class GamePanel extends JPanel implements ActionListener {
             ge.registerFont(GAMEOVER_FONT);
             ge.registerFont(SCORE_FONT);
         } catch (IOException|FontFormatException e) {
-            e.printStackTrace();;
+            e.printStackTrace();
         }
         
+        this.add(replay);
+        replay.setVisible(false);
+        replay.setBounds(SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT - 200, 200, 100);
         random = new Random();
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
-        this.add(replay);
-        replay.setVisible(false);
-        replay.setBounds(SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT - 130, 100, 60);
+
+        replay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(e.getSource() == replay) {
+                    JComponent comp = (JComponent)e.getSource();
+                    Window win = SwingUtilities.getWindowAncestor(comp);
+                    win.dispose();  //It will close the current window
+                    new GameFrame();  //It will create a new game
+                }
+            }
+        });
+
         startGame();
     }
 
@@ -259,17 +279,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
         //Play again button
         replay.setVisible(true);
-        replay.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(e.getSource() == replay) {
-                    JComponent comp = (JComponent) e.getSource();
-                    Window win = SwingUtilities.getWindowAncestor(comp);
-                    win.dispose();  //It will close the current window
-                    new GameFrame();  //It will create a new game
-                }
-            }
-        });
     }
 
     /**
