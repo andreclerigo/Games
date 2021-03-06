@@ -19,8 +19,8 @@ Built with JDK version LTS 11.0.10
 Change whatever properties you want inside the GamePanel.java such as Delay(Pace of the game), Screen Width/Height, Square Size and inital body size  
 Delete the build folder  
 Go inside the Snake/src folder and do `javac -d ./../build *.java`  
-Download the manifest.mf and copy lib directory and put it inside the build directory
-Go inside the build directory `jar -cvmf manifest.mf Game.jar Snake/src/*.class Snake/lib/`  
+Download the manifest.mf and copy lib directory and put both inside the build directory
+Go inside the build directory and do `jar -cvmf manifest.mf Game.jar Snake/src/*.class Snake/lib/`  
 It's done your Game.jar executes the Snake Game  
   
 With VSCode  

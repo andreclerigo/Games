@@ -4,10 +4,7 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-
-import java.util.EmptyStackException;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The classic game Snake on Java!
@@ -28,17 +25,14 @@ public class GamePanel extends JPanel implements ActionListener {
 
     boolean grid = true;  //Show a grid in-game
     int bodySize = BODY;
-    int applesEaten;
-    int appleX;
-    int appleY;
+    int applesEaten, appleX, appleY;
     int HIGH_SCORE;
     char direction = 'R';
     boolean running = false;    
     Timer timer;
     Random random;
-    Font GAMEOVER_FONT;
+    Font GAMEOVER_FONT, SCORE_FONT;
     long startTime;
-    InputStream is = this.getClass().getClassLoader().getResourceAsStream("game_over.ttf");
 
     String basePath = new File("").getAbsolutePath();
     JButton replay = new JButton("Play Again");
@@ -53,6 +47,18 @@ public class GamePanel extends JPanel implements ActionListener {
             HIGH_SCORE = g.HIGH_SCORE;
         } catch(Exception e) {
             e.printStackTrace();
+        }
+
+        try {
+            InputStream is_game_over = this.getClass().getResourceAsStream("/Snake/lib/font/game_over.ttf");
+            InputStream is_Premier = this.getClass().getResourceAsStream("/Snake/lib/font/Premier2019-rPv9.ttf");
+            GAMEOVER_FONT = Font.createFont(Font.TRUETYPE_FONT, is_game_over).deriveFont(200f);
+            SCORE_FONT = Font.createFont(Font.TRUETYPE_FONT, is_Premier).deriveFont(40f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(GAMEOVER_FONT);
+            ge.registerFont(SCORE_FONT);
+        } catch (IOException|FontFormatException e) {
+            e.printStackTrace();;
         }
         
         random = new Random();
@@ -122,7 +128,8 @@ public class GamePanel extends JPanel implements ActionListener {
     public void scoreDisplay(Graphics g) {
         //Drawing apple count
         g.setColor(Color.RED);
-        g.setFont(new Font("Arial", Font.BOLD, 40));
+        //g.setFont(new Font("Arial", Font.BOLD, 40));
+        g.setFont(SCORE_FONT);
         FontMetrics metrics = getFontMetrics(g.getFont());
         //Center the text
         g.drawString("Score: " + applesEaten, (SCREEN_WIDTH - metrics.stringWidth("Score: " + applesEaten))/2, g.getFont().getSize());
@@ -136,7 +143,8 @@ public class GamePanel extends JPanel implements ActionListener {
     public void highScoreDisplay(Graphics g, boolean newHS) {
         //Drawing High Score
         g.setColor(Color.YELLOW);
-        g.setFont(new Font("Arial", Font.BOLD, 40));
+        //g.setFont(new Font("Arial", Font.BOLD, 40));
+        g.setFont(SCORE_FONT);
         FontMetrics metrics = getFontMetrics(g.getFont());
         //Center the text
         if(!newHS)
@@ -224,24 +232,11 @@ public class GamePanel extends JPanel implements ActionListener {
      * @param g graphics used in the game
      */
     public void gameOver(Graphics g) {
-        /* if (is == null) {
-            throw new EmptyStackException();
-        }
-        */
-
         //Game Over text
         g.setColor(Color.RED);
-        try {
-            GAMEOVER_FONT = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(200f);	
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(GAMEOVER_FONT);
-            g.setFont(GAMEOVER_FONT);
-        } catch (IOException|FontFormatException e) {
-            e.printStackTrace();
-            g.setFont(new Font("Segoe UI Black", Font.BOLD, 75));
-        }
-
+        g.setFont(GAMEOVER_FONT);
         FontMetrics metrics = getFontMetrics(g.getFont());
+
         //Center the text
         g.drawString("GAME OVER", (SCREEN_WIDTH - metrics.stringWidth("GAME OVER"))/2, SCREEN_HEIGHT/2);
 
