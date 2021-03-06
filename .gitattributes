@@ -1,3 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 Java/Snake/docs/* linguist-documentation
+Java/Snake/docs/resources/* linguist-documentation
+Java/Snake/docs/jquery/* linguist-documentation
