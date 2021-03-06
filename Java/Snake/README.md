@@ -2,15 +2,16 @@
 This repository contains all the files and documentation needed to create the Snake Game (This version doesn't support LINUX)
 # Executable
 The executable file is .jar
-Snake  
-├── build  
-│   └── Game.jar  
+Snake   
 ├── lib  
-│   └── game_over.tff  
+│   └── font
+│   │   ├── Premier2019-rPv9.ttf  
+│   │   └── game_over.tff  
 ├── src  
 │   ├── GameFrame.java  
 │   ├── GamePanel.java  
 │   └── SnakeGame.java  
+└── Game.jar
  
 # Version
 Built with JDK version LTS 11.0.10  
