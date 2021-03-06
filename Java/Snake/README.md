@@ -6,6 +6,8 @@ This repository contains all the files and documentation needed to create the Sn
 The executable file is .jar
 <pre>
 Snake  
+├── docs  
+│   └── my javadocs
 ├── lib  
 │   ├── font  
 │   │   ├── Premier2019-rPv9.ttf  
