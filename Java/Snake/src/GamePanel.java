@@ -29,22 +29,30 @@ public class GamePanel extends JPanel implements ActionListener {
     int applesEaten, appleX, appleY;
     int HIGH_SCORE;
     char direction = 'R';
-    boolean running = false;    
+    boolean running = false;
+    boolean linux = false;   
     Timer timer;
     Random random;
     Font GAMEOVER_FONT, SCORE_FONT;
     long startTime;
 
     String basePath = new File("").getAbsolutePath();
-    JButton replay; //= new JButton("Play Again");
+    JButton replay;
 
     /**
      * At the beginning it retrieves information from the Serialization and if this exists the game will use the High Score stored in there
      * Starts the window with the correct dimensions and starts the game
      */
     GamePanel() {
+        linux = isUnix();
+
         try {
-            GamePanel g = rescueGame("/temp/SnakeGameInformation.ser");
+            GamePanel g;
+            if(linux)
+                g = rescueGame("/tmp/SnakeGameInformation.ser");
+            else
+                g = rescueGame("/temp/SnakeGameInformation.ser");
+
             HIGH_SCORE = g.HIGH_SCORE;
         } catch(Exception e) {
             e.printStackTrace();
@@ -158,7 +166,7 @@ public class GamePanel extends JPanel implements ActionListener {
     /**
      * Displays the player High Score at game over
      * @param g graphics used in the game
-     * @param newHS used to see if it's a new High Score
+     * @param newHS used to see if it's a new High Score achieved
      */
     public void highScoreDisplay(Graphics g, boolean newHS) {
         //Drawing High Score
@@ -272,7 +280,10 @@ public class GamePanel extends JPanel implements ActionListener {
 
         //Save the game information before closing
         try {
-            saveGame("/temp/SnakeGameInformation.ser");
+            if(linux)
+                saveGame("/tmp/SnakeGameInformation.ser");
+            else
+                saveGame("/temp/SnakeGameInformation.ser");
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -378,4 +389,12 @@ public class GamePanel extends JPanel implements ActionListener {
             }
         }
     }
+
+    public String getOsName() {
+        String OS = null;
+        if(OS == null) { OS = System.getProperty("os.name"); }
+        return OS;
+    }
+
+    public boolean isUnix() { return getOsName().startsWith("Linux"); }
 }
