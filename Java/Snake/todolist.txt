@@ -1,6 +1,1 @@
-Making a javadoc with
-javadoc -d 'C:\Users\AndreClerigo\Desktop\Snake\' -sourcepath C:\Users\AndreClerigo\Desktop\ Snake.src
-
-Support for Linux?
-
 Settings section

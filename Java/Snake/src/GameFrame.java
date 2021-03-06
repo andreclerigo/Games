@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 /**
  * Does the JFrame necessary to the game
  * @author André Clérigo
+ * @version 1.00 Windows and Linux Supported
  */
 public class GameFrame extends JFrame {
     private static final long serialVersionUID = 691626158617771852L;

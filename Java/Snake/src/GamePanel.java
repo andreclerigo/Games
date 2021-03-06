@@ -10,6 +10,7 @@ import java.util.Random;
 /**
  * The classic game Snake on Java!
  * @author André Clérigo
+ * @version 1.00 Windows and Linux Supported
  */
 public class GamePanel extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1181129953415591504L;
@@ -30,7 +31,7 @@ public class GamePanel extends JPanel implements ActionListener {
     int HIGH_SCORE;
     char direction = 'R';
     boolean running = false;
-    boolean linux = false;   
+    boolean linux = false;  //Diferent folder save and rescure for LINUX 
     Timer timer;
     Random random;
     Font GAMEOVER_FONT, SCORE_FONT;
@@ -41,6 +42,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
     /**
      * At the beginning it retrieves information from the Serialization and if this exists the game will use the High Score stored in there
+     * Sets the correct custom fonts and images
      * Starts the window with the correct dimensions and starts the game
      */
     GamePanel() {
@@ -53,18 +55,20 @@ public class GamePanel extends JPanel implements ActionListener {
             else
                 g = rescueGame("/temp/SnakeGameInformation.ser");
 
-            HIGH_SCORE = g.HIGH_SCORE;
+            HIGH_SCORE = g.HIGH_SCORE;  //Replace the new High Score value
         } catch(Exception e) {
             e.printStackTrace();
         }
         
         try {
+            //Set an image as a JButton
             InputStream is_replay = this.getClass().getResourceAsStream("/Snake/lib/img/playagain.png");
             ImageIcon icon = new ImageIcon(ImageIO.read(is_replay));
             replay = new JButton(icon);
             replay.setBorder(BorderFactory.createEmptyBorder());
             replay.setContentAreaFilled(false);
 
+            //Register custom fonts for Score and GAME OVER
             InputStream is_game_over = this.getClass().getResourceAsStream("/Snake/lib/font/game_over.ttf");
             InputStream is_Premier = this.getClass().getResourceAsStream("/Snake/lib/font/Premier2019-rPv9.ttf");
             GAMEOVER_FONT = Font.createFont(Font.TRUETYPE_FONT, is_game_over).deriveFont(200f);
@@ -76,15 +80,17 @@ public class GamePanel extends JPanel implements ActionListener {
             e.printStackTrace();
         }
         
+        //Adding the replay button
         this.add(replay);
         replay.setVisible(false);
         replay.setBounds(SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT - 200, 200, 100);
         random = new Random();
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        this.setBackground(Color.BLACK);
+        this.setBackground(Color.BLACK);  //Background Color
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
 
+        //ActionListener on replay button that restarts the game on click
         replay.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,7 +111,7 @@ public class GamePanel extends JPanel implements ActionListener {
      */
     public void startGame() {
         spawnApple();
-        running = true;
+        running = true;  //Game starts
         timer = new Timer(DELAY, this);
         timer.start();
     }
@@ -130,15 +136,15 @@ public class GamePanel extends JPanel implements ActionListener {
                 }
             }
 
-            g.setColor(Color.RED);
+            g.setColor(Color.RED);  //Apple color
             g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
 
             for(int i = 0; i < bodySize; i++) {
                 if(i != 0) {
-                    g.setColor(new Color(0, 128, 0));
+                    g.setColor(new Color(0, 128, 0));  //Body color
                     g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
                 } else {
-                    g.setColor(new Color(50, 205, 50));  //Color.GREEN
+                    g.setColor(new Color(50, 205, 50));  //Head color
                     g.fillRect(x[0], y[0], UNIT_SIZE, UNIT_SIZE);
                 }
             }
@@ -346,55 +352,54 @@ public class GamePanel extends JPanel implements ActionListener {
             if(elapsedTime > DELAY-12) {
                 startTime = System.currentTimeMillis();
                 switch(e.getKeyCode()) {
-                    case KeyEvent.VK_LEFT:
-                                        if(direction != 'R')
-                                            direction = 'L';
-                                        break;
-
                     case KeyEvent.VK_A:
-                                        if(direction != 'R')
-                                            direction = 'L';
-                                        break;
-
-                    case KeyEvent.VK_RIGHT:
-                                        if(direction != 'L')
-                                            direction = 'R';
-                                        break;
-
+                    case KeyEvent.VK_LEFT:
+                                        {
+                                            if(direction != 'R')
+                                                direction = 'L';
+                                            break;
+                                        }
+                    
                     case KeyEvent.VK_D:
-                                        if(direction != 'L')
-                                            direction = 'R';
-                                        break;
-
-                    case KeyEvent.VK_UP:
-                                        if(direction != 'D')
-                                            direction = 'U';
-                                        break;
+                    case KeyEvent.VK_RIGHT:
+                                        {
+                                            if(direction != 'L')
+                                                direction = 'R';
+                                            break;
+                                        }
 
                     case KeyEvent.VK_W:
-                                        if(direction != 'D')
-                                            direction = 'U';
-                                        break;
+                    case KeyEvent.VK_UP:
+                                        {
+                                            if(direction != 'D')
+                                                direction = 'U';
+                                            break;
+                                        }
 
-                    case KeyEvent.VK_DOWN:
-                                        if(direction != 'U')
-                                            direction = 'D';
-                                        break;
-                    
                     case KeyEvent.VK_S:
-                                        if(direction != 'U')
-                                            direction = 'D';
-                                        break;
+                    case KeyEvent.VK_DOWN:
+                                            {if(direction != 'U')
+                                                direction = 'D';
+                                            break;
+                                        }
                 }
             }
         }
     }
 
+    /**
+     * Getting the OS name
+     * @return returns a String with the name of the OS
+     */
     public String getOsName() {
         String OS = null;
         if(OS == null) { OS = System.getProperty("os.name"); }
         return OS;
     }
 
+    /**
+     * Tells if the system is UNIX
+     * @return when true the OS is LINUX
+     */
     public boolean isUnix() { return getOsName().startsWith("Linux"); }
 }
