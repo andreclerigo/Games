@@ -10,8 +10,8 @@ Snake
 │   └── font  
 │   │   ├── Premier2019-rPv9.ttf  
 │   │   └── game_over.tff  
-├── img  
-│   └── playagain.png  
+│   ├── img  
+│   │   └── playagain.png  
 ├── src  
 │   ├── GameFrame.java  
 │   ├── GamePanel.java  
