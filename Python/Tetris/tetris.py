@@ -129,16 +129,18 @@ T = [['.....',
 shapes = [S, Z, I, O, J, L, T]
 shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
 
-
+#Contrustor for the Piece (Shape in-game)
 class Piece(object):
     #Constructor for the shape
     def __init__(self, x, y, shape):
-        self.x = x                 #BUG shoudnt need this!
+        self.x = x
         self.y = y
         self.shape = shape
         self.color = shape_colors[shapes.index(shape)]  #Get the color by the shape_colors list
         self.rotation = 0
 
+
+#Create and define the grid for the game
 def create_grid(locked_positions={}):
     grid = [[(0, 0, 0) for x in range(grid_columns)] for x in range(grid_rows)]  #Create a 10 by 20 grid with the color black(0,0,0)
 
@@ -150,28 +152,30 @@ def create_grid(locked_positions={}):
     return grid
 
 
+#Conver the shape (list of dots and zeros) to a format interpreted by the game
 def convert_shape_format(shape):
-    positions = []
+    positions = []  #Positions that the shape will occupy
     
-    format = shape.shape[shape.rotation % len(shape.shape)]
+    format = shape.shape[shape.rotation % len(shape.shape)]  #The shape will always have one of the rotations no matter the rotation counter (using mod)
 
     for i, line in enumerate(format):
-        row = list(line)
-        for j, column in enumerate(row):
+        row = list(line)                    #Will get the row on the shape [..0..] and iterate it
+        for j, column in enumerate(row):    #Will iterate the columns on the row (getting the character '.' or '0')
             if column == '0':
                 positions.append((shape.x + j, shape.y + i))
 
     for i, pos in enumerate(positions):
-        positions[i] = (pos[0] - 2, pos[1] - 4)
+        positions[i] = (pos[0] - 2, pos[1] - 4)  #The object will be created above the play screen so the piece is already sliding down
 
     return positions
 
 
+#Returns if the movement is to a valid position (a position that the piece can go onto)
 def valid_space(shape, grid):
-    accepted_pos = [[(j, i) for j in range(10) if grid[i][j] == (0, 0, 0)] for i in range(20)]  #Make a list of empty positions
+    accepted_pos = [[(j, i) for j in range(10) if grid[i][j] == (0, 0, 0)] for i in range(20)]  #Make a list of empty positions (color is black)
     accepted_pos = [j for sub in accepted_pos for j in sub]  #Flatten the list
 
-    formated = convert_shape_format(shape)
+    formated = convert_shape_format(shape)  #Get the shape on the correct format
 
     for pos in formated:
         if pos not in accepted_pos:
@@ -180,6 +184,7 @@ def valid_space(shape, grid):
     return True
 
 
+#Returns if the game is lost
 def check_lost(positions):
     for pos in positions:
         x, y = pos
@@ -197,48 +202,59 @@ def get_shape():
 
 
 def draw_text_middle(text, size, color, surface):
-    #Type of font
-    font = pygame.font.SysFont('arial black', 60)
-    label = font.render('Tetris', 1, (255, 255, 255))  #Label text, antialiasing, color
-
-    surface.blit(label, (top_left_x + play_height/2 - (label.get_width()/2), 30))  #Center the label on the screen
+    pass
 
 
+#Draws the grid (the playable area)
 def draw_grid(surface, grid):
     sx = top_left_x
     sy = top_left_y
 
-    for i in range(len(grid)):
-        pygame.draw.line(surface, (128,128,128), (sx, sy+ i*block_size), (sx + play_width, sy + i*block_size))  # horizontal lines
-        for j in range(len(grid[i])):
-            pygame.draw.line(surface, (128,128,128), (sx + j*block_size, sy), (sx + j*block_size, sy + play_height))  # vertical lines
+    for i in range(len(grid)):  #Rows
+        pygame.draw.line(surface, (128,128,128), (sx, sy+ i*block_size), (sx + play_width, sy + i*block_size))  #Horizontal lines
+        for j in range(len(grid[i])):  #Columns
+            pygame.draw.line(surface, (128,128,128), (sx + j*block_size, sy), (sx + j*block_size, sy + play_height))  #Vertical lines
     
 
 def clear_rows(grid, locked):
     pass
 
 
+#Draws the next shape outside the playable area so the player can know what's next
 def draw_next_shape(shape, surface):
-    pass
+    font = pygame.font.SysFont('Arial', 30)  #Type of font and size
+    label = font.render('Next Shape', 1, (255, 255, 255))  #Text, antialiasing and color
+
+    sx = top_left_x + play_width + 50
+    sy = top_left_y + play_height/2 - 100
+    format = shape.shape[shape.rotation  % len(shape.shape)]
+
+    #Iterate through the coordinates of the shape and draw it
+    for i, line in enumerate(format):
+        row = list(line)
+        for j, column in enumerate(row):
+            if column == '0':
+                pygame.draw.rect(surface, shape.color, (sx + j*block_size, sy + i*block_size, block_size, block_size), 0)
+
+    surface.blit(label, (sx + 10, sy -30))  #Position the next shape on the window outside the grid (change the constants to ger)
 
 
+#Draws the window (not to be confuse with the grid)
 def draw_window(surface, grid):
-    surface.fill((0, 0, 0))
+    surface.fill((0, 0, 0))  #Fill the window with black background
 
     pygame.font.init()
-    #Type of font
-    font = pygame.font.SysFont('comicsans', 60)
+    font = pygame.font.SysFont('comicsans', 60)  #Type of font and size
     label = font.render('Tetris', 1, (255, 255, 255))  #Label text, antialiasing, color
 
-    surface.blit(label, (top_left_x + play_width/2 - (label.get_width()/2), 30))  #Center the label on the screen
+    surface.blit(label, (top_left_x + play_width/2 - (label.get_width()/2), block_size))  #Center the title on the screen
     
-    for i in range(len(grid)):
-        for j in range(len(grid[i])):
-            pygame.draw.rect(surface, grid[i][j], (top_left_x + j* 30, top_left_y + i * 30, 30, 30), 0)
+    for i in range(len(grid)):  #Rows
+        for j in range(len(grid[i])):  #Columns
+            pygame.draw.rect(surface, grid[i][j], (top_left_x + j* block_size, top_left_y + i * block_size, block_size, block_size), 0)
     
     draw_grid(surface, grid)
-    
-    pygame.display.update()
+    pygame.draw.rect(surface, (255, 0, 0), (top_left_x, top_left_y, play_width, play_height), 5)  #Draw the rectangle that limits the play space
   
 
 def main(win):
@@ -288,7 +304,7 @@ def main(win):
                         current_piece.rotation -=1
 
                 elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                    current_piece.x -= 1
+                    current_piece.y += 1
                     if not(valid_space(current_piece, grid)):
                         current_piece.y -=1
         
@@ -297,8 +313,6 @@ def main(win):
         for i in range(len(shape_pos)):
             x, y = shape_pos[i]
             if y > -1:
-                print("y " + str(y))
-                print("x " + str(x))
                 grid[y][x] = current_piece.color
 
         if change_piece:
@@ -309,12 +323,16 @@ def main(win):
             next_piece = get_shape()
             change_piece = False
 
-        draw_window(win, grid)
         
+        draw_window(win, grid)
+        draw_next_shape(next_piece, win)
+        pygame.display.update()
+
         if check_lost(locked_positions):
             run = False
 
     pygame.display.quit()
+
 
 def main_menu(win):
     main(win)
