@@ -251,7 +251,7 @@ def clear_rows(grid, locked):
 
 #Draws the next shape outside the playable area so the player can know what's next
 def draw_next_shape(shape, surface):
-    font = pygame.font.SysFont('Arial', 30)  #Type of font and size
+    font = pygame.font.Font(resource_path("Premier2019-rPv9.ttf"), 30)  #Type of font and size
     label = font.render('Next Shape', 1, (255, 255, 255))  #Text, antialiasing and color
 
     sx = top_left_x + play_width + 50
@@ -265,26 +265,29 @@ def draw_next_shape(shape, surface):
             if column == '0':
                 pygame.draw.rect(surface, shape.color, (sx + j*block_size, sy + i*block_size, block_size, block_size), 0)
 
-    surface.blit(label, (sx + 10, sy -30))  #Position the next shape on the window outside the grid (change the constants to ger)
+    surface.blit(label, (sx + 10, sy - 45))  #Position the next shape on the window outside the grid (change the constants to ger)
 
 
 #Draws the window (not to be confuse with the grid)
 def draw_window(surface, grid, score=0):
     surface.fill((0, 0, 0))  #Fill the window with black background
 
-    pygame.font.init()
-    font = pygame.font.SysFont('comicsans', 60)  #Type of font and size
+    font = pygame.font.Font(resource_path("Premier2019-rPv9.ttf"), 70)  #Type of font and size
     label = font.render('Tetris', 1, (255, 255, 255))  #Label text, antialiasing, color
 
-    surface.blit(label, (top_left_x + play_width/2 - (label.get_width()/2), block_size))  #Center the title on the screen
+    surface.blit(label, (top_left_x + play_width/2 - (label.get_width()/2), 10))  #Center the title on the screen
     
-    font = pygame.font.SysFont('comicsans', 30)  #Type of font and size
+    font = pygame.font.Font(resource_path("Premier2019-rPv9.ttf"), 30)  #Type of font and size
     label = font.render('Score: ' + str(score), 1, (255, 255, 255))  #Text, antialiasing and color
 
     sx = top_left_x + play_width + 50
     sy = top_left_y + play_height/2 - 100
-    
-    surface.blit(label, (sx + 40, sy + 180))
+    surface.blit(label, (sx + 30, sy + 180))  #Set the source text on the correct place
+
+    #Information text for mute
+    font = pygame.font.Font(resource_path("Premier2019-rPv9.ttf"), 30)  #Type of font and size
+    label = font.render('Press M to mute', 1, (255, 255, 255))  #Text, antialiasing and color
+    surface.blit(label, ((top_left_x - label.get_width())/2 , top_left_y + play_height - label.get_height()))
 
     for i in range(len(grid)):  #Rows
         for j in range(len(grid[i])):  #Columns
@@ -295,12 +298,17 @@ def draw_window(surface, grid, score=0):
   
 
 def main(win):
+    pygame.init()
+    pygame.mixer.music.load(resource_path("tetris-gameboy-02.mp3"))
+    pygame.mixer.music.set_volume(0.1)
+    pygame.mixer.music.play(-1)
     locked_positions = {}
 
     grid = create_grid(locked_positions)
 
     change_piece = False
     run = True
+    paused = False
     current_piece = get_shape()
     next_piece = get_shape()
     clock = pygame.time.Clock()
@@ -315,9 +323,9 @@ def main(win):
         level_time += clock.get_rawtime()
         clock.tick()
         
-        if level_time/1000 > 5:
+        if level_time/1000 > 30:
             level_time = 0
-            if fall_speed > 0.12:
+            if fall_speed > 0.15:
                 fall_speed -= 0.005
 
         if fall_time/1000 > fall_speed:
@@ -330,6 +338,7 @@ def main(win):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                pygame.mixer.music.stop()
                 pygame.display.quit()
                 sys.exit(0)
 
@@ -354,7 +363,22 @@ def main(win):
                     current_piece.y += 1
                     if not(valid_space(current_piece, grid)):
                         current_piece.y -=1
-        
+
+                elif event.key == pygame.K_SPACE:
+                    while valid_space(current_piece, grid):
+                        current_piece.y += 1
+                        pygame.display.update()
+                    if not(valid_space(current_piece, grid)):
+                        current_piece.y -=1
+
+                elif event.key == pygame.K_m:
+                    if paused:
+                        paused = False
+                        pygame.mixer.music.unpause()
+                    else:
+                        paused = True
+                        pygame.mixer.music.pause()
+
         shape_pos = convert_shape_format(current_piece)
 
         for i in range(len(shape_pos)):
@@ -377,6 +401,7 @@ def main(win):
         pygame.display.update()
 
         if check_lost(locked_positions):
+            win.fill((0, 0, 0))
             draw_text_middle("GAME OVER", 300, (255, 0, 0), win)
             pygame.display.update()
             pygame.time.delay(1500)
@@ -386,6 +411,7 @@ def main(win):
 def main_menu(win):
     run = True
     while run:
+        #Waiting screen for the player to be ready
         win.fill((0, 0, 0))
         draw_text_middle("Press Any Key To Play", 150, (255, 255, 255), win)
         pygame.display.update()
@@ -395,6 +421,7 @@ def main_menu(win):
             if event.type == pygame.KEYDOWN:
                 main(win)
 
+
 def resource_path(relative_path):
     try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
@@ -403,6 +430,7 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
+
 
 win = pygame.display.set_mode((s_width, s_height))
 pygame.display.set_caption('Tetris')

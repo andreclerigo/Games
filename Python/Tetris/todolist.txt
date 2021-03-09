@@ -1,5 +1,3 @@
 music in game
-high score
+high score  serialization
 test play difficulty
-serialization
-space key goes down instantly
