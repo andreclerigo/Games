@@ -39,3 +39,6 @@ With VSCode
 Create a Java Project with VSCode and copy the files inside Snake directory  
 On the Java Projects side bar select Export Jar and for the main class choose SnakeGame  
 A file called java.jar will appear on the root folder and that is the executable for the game  
+
+# Troubleshooting
+If the High Score isn't saving please check if you have a folder on your system root called `temp` if you're on Windows or `tmp` if you are on Linux  
