@@ -417,7 +417,7 @@ def main(win):
             if highScore < score:
                 highScore = score
 
-            with open("/tmp/tetris.ser", "wb") as f:
+            with open("/temp/tetris.ser", "wb") as f:
                 pickle.dump(([highScore, paused]), f)
 
             win.fill((0, 0, 0))
