@@ -1,3 +1,0 @@
-music in game
-high score  serialization
-test play difficulty

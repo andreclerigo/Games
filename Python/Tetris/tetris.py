@@ -1,16 +1,7 @@
-import sys
-import os
-import pygame
-import random
+import sys, os, pygame, random, pickle
 from pygame import draw
 from pygame.display import update
 from pygame.version import PygameVersion
- 
-"""
-10 x 20 square grid
-shapes: S, Z, I, O, J, L, T
-represented in order by 0 - 6
-"""
 
 pygame.font.init()
  
@@ -269,7 +260,7 @@ def draw_next_shape(shape, surface):
 
 
 #Draws the window (not to be confuse with the grid)
-def draw_window(surface, grid, score=0):
+def draw_window(surface, grid, score=0, highScore=0):
     surface.fill((0, 0, 0))  #Fill the window with black background
 
     font = pygame.font.Font(resource_path("Premier2019-rPv9.ttf"), 70)  #Type of font and size
@@ -279,10 +270,12 @@ def draw_window(surface, grid, score=0):
     
     font = pygame.font.Font(resource_path("Premier2019-rPv9.ttf"), 30)  #Type of font and size
     label = font.render('Score: ' + str(score), 1, (255, 255, 255))  #Text, antialiasing and color
-
     sx = top_left_x + play_width + 50
     sy = top_left_y + play_height/2 - 100
     surface.blit(label, (sx + 30, sy + 180))  #Set the source text on the correct place
+
+    label = font.render('High Score: ' + str(highScore), 1, (255, 255, 255))  #Text, antialiasing and color
+    surface.blit(label, (sx + 5, sy + 240))  #Set the source text on the correct place
 
     #Information text for mute
     font = pygame.font.Font(resource_path("Premier2019-rPv9.ttf"), 30)  #Type of font and size
@@ -306,9 +299,19 @@ def main(win):
 
     grid = create_grid(locked_positions)
 
+    try:
+        with open("/temp/tetris.ser", "rb") as f:
+            saved = pickle.load(f)
+        highScore = saved[0]
+        paused = bool(saved[1])
+        if(paused):
+            pygame.mixer.music.pause()
+    except:
+        highScore = 0
+        paused = False
+
     change_piece = False
     run = True
-    paused = False
     current_piece = get_shape()
     next_piece = get_shape()
     clock = pygame.time.Clock()
@@ -335,6 +338,7 @@ def main(win):
                 current_piece.y -=1
                 change_piece = True
 
+        #Different events for quitting the game, playing or muting the sound
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -396,11 +400,18 @@ def main(win):
             score += clear_rows(grid, locked_positions)*10
 
         
-        draw_window(win, grid, score)
+        draw_window(win, grid, score, highScore)
         draw_next_shape(next_piece, win)
         pygame.display.update()
 
+        #Do on game over
         if check_lost(locked_positions):
+            if highScore < score:
+                highScore = score
+            
+            with open("/temp/tetris.ser", "wb") as f:
+                pickle.dump(([highScore, paused]), f)
+
             win.fill((0, 0, 0))
             draw_text_middle("GAME OVER", 300, (255, 0, 0), win)
             pygame.display.update()
