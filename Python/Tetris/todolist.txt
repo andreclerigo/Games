@@ -1,5 +1,5 @@
 music in game
-custom fonts
-create an executable
+high score
 test play difficulty
 serialization
+space key goes down instantly

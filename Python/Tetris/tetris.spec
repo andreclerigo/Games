@@ -15,6 +15,9 @@ a = Analysis(['tetris.py'],
              win_private_assemblies=False,
              cipher=block_cipher,
              noarchive=False)
+			 
+a.datas += [('game_over.ttf','C:\\Users\\AndreClerigo\\Desktop\\Git\\Games\\Python\\Tetris\\assets\\fonts\\game_over.ttf', "DATA")]
+
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,

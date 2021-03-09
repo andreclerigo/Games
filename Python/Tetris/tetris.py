@@ -203,11 +203,12 @@ def get_shape():
     return Piece(grid_columns//2 , 0, random.choice(shapes))
 
 
+#General function used to write any text ont the middle of the window
 def draw_text_middle(text, size, color, surface):
-    font = pygame.font.SysFont("Arial black", size, bold=True)
+    font = pygame.font.Font(resource_path("game_over.ttf"), size)
     label = font.render(text, 1, color)
 
-    surface.blit(label, (top_left_x + play_width / 2 - (label.get_width()/2), top_left_y +  play_height / 2 - label.get_height() / 2))
+    surface.blit(label, (top_left_x + play_width / 2 - (label.get_width()/2), top_left_y +  (play_height / 2) - (label.get_height())))
 
 
 #Draws the grid (the playable area)
@@ -376,7 +377,7 @@ def main(win):
         pygame.display.update()
 
         if check_lost(locked_positions):
-            draw_text_middle("YOU LOST", 80, (255, 255, 255), win)
+            draw_text_middle("GAME OVER", 300, (255, 0, 0), win)
             pygame.display.update()
             pygame.time.delay(1500)
             run = False
@@ -386,7 +387,7 @@ def main_menu(win):
     run = True
     while run:
         win.fill((0, 0, 0))
-        draw_text_middle("Press Any Key To Play", 40, (255, 255, 255), win)
+        draw_text_middle("Press Any Key To Play", 150, (255, 255, 255), win)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
