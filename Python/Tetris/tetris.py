@@ -1,3 +1,4 @@
+import sys
 import pygame
 import random
 from pygame import draw
@@ -202,7 +203,10 @@ def get_shape():
 
 
 def draw_text_middle(text, size, color, surface):
-    pass
+    font = pygame.font.SysFont("Arial black", size, bold=True)
+    label = font.render(text, 1, color)
+
+    surface.blit(label, (top_left_x + play_width / 2 - (label.get_width()/2), top_left_y +  play_height / 2 - label.get_height() / 2))
 
 
 #Draws the grid (the playable area)
@@ -240,6 +244,8 @@ def clear_rows(grid, locked):
                 newKey = (x, y + inc)
                 locked[newKey] = locked.pop(key)
 
+    return inc
+
 
 #Draws the next shape outside the playable area so the player can know what's next
 def draw_next_shape(shape, surface):
@@ -261,7 +267,7 @@ def draw_next_shape(shape, surface):
 
 
 #Draws the window (not to be confuse with the grid)
-def draw_window(surface, grid):
+def draw_window(surface, grid, score=0):
     surface.fill((0, 0, 0))  #Fill the window with black background
 
     pygame.font.init()
@@ -270,6 +276,14 @@ def draw_window(surface, grid):
 
     surface.blit(label, (top_left_x + play_width/2 - (label.get_width()/2), block_size))  #Center the title on the screen
     
+    font = pygame.font.SysFont('comicsans', 30)  #Type of font and size
+    label = font.render('Score: ' + str(score), 1, (255, 255, 255))  #Text, antialiasing and color
+
+    sx = top_left_x + play_width + 50
+    sy = top_left_y + play_height/2 - 100
+    
+    surface.blit(label, (sx + 40, sy + 180))
+
     for i in range(len(grid)):  #Rows
         for j in range(len(grid[i])):  #Columns
             pygame.draw.rect(surface, grid[i][j], (top_left_x + j* block_size, top_left_y + i * block_size, block_size, block_size), 0)
@@ -290,11 +304,19 @@ def main(win):
     clock = pygame.time.Clock()
     fall_time = 0
     fall_speed = 0.27
+    level_time = 0
+    score = 0
 
     while run:
         grid = create_grid(locked_positions)
-        fall_time += clock.get_rawtime() 
+        fall_time += clock.get_rawtime()
+        level_time += clock.get_rawtime()
         clock.tick()
+        
+        if level_time/1000 > 5:
+            level_time = 0
+            if fall_speed > 0.12:
+                fall_speed -= 0.005
 
         if fall_time/1000 > fall_speed:
             fall_time = 0
@@ -306,6 +328,8 @@ def main(win):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                pygame.display.quit()
+                sys.exit(0)
 
             elif event.type == pygame.KEYDOWN:
                 #Python doesn't have a proprietary switch case structurer -.-
@@ -343,21 +367,31 @@ def main(win):
             current_piece = next_piece
             next_piece = get_shape()
             change_piece = False
-            clear_rows(grid, locked_positions)
+            score += clear_rows(grid, locked_positions)*10
+
         
-        draw_window(win, grid)
+        draw_window(win, grid, score)
         draw_next_shape(next_piece, win)
         pygame.display.update()
 
         if check_lost(locked_positions):
+            draw_text_middle("YOU LOST", 80, (255, 255, 255), win)
+            pygame.display.update()
+            pygame.time.delay(1500)
             run = False
-
-    pygame.display.quit()
 
 
 def main_menu(win):
-    main(win)
-
+    run = True
+    while run:
+        win.fill((0, 0, 0))
+        draw_text_middle("Press Any Key To Play", 40, (255, 255, 255), win)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.KEYDOWN:
+                main(win)
 
 win = pygame.display.set_mode((s_width, s_height))
 pygame.display.set_caption('Tetris')
