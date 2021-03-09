@@ -18,5 +18,6 @@ This will create four important items:
 ```
 Inside the current folder a file called tetris.spec was created edit it and add the following line(s)  
 `a.datas += [('name_of_the_foont.ttf','ABSOLUTE_PATH_TO_FONT', "DATA")]`  
-Save and do `pyinstaller yourspecfile.spec`  
+`a.datas += [('sound.mp3','ABSOLUTE_PATH_TO_SOUND', "DATA")]`  
+Save and do `pyinstaller tetris.spec`  
 It's done the .exe will now have the custom fonts and the game will be playable!
