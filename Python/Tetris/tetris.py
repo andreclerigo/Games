@@ -1,4 +1,6 @@
 import sys, os, pygame, random, pickle
+from sys import platform
+from pathlib import Path
 from pygame import draw
 from pygame.display import update
 from pygame.version import PygameVersion
@@ -299,11 +301,15 @@ def main(win):
 
     grid = create_grid(locked_positions)
 
+    #Try to see if the game was already played on the machine
     try:
+        if not os.path.exists("/temp/"):
+            os.makedirs("/temp/")
         with open("/temp/tetris.ser", "rb") as f:
             saved = pickle.load(f)
-        highScore = saved[0]
-        paused = bool(saved[1])
+        
+        highScore = saved[0]  #Getting the highScore saved
+        paused = bool(saved[1])  #Getting the setting of mute
         if(paused):
             pygame.mixer.music.pause()
     except:
@@ -321,11 +327,13 @@ def main(win):
     score = 0
 
     while run:
+        #Creating the grid and the timer starts
         grid = create_grid(locked_positions)
         fall_time += clock.get_rawtime()
         level_time += clock.get_rawtime()
         clock.tick()
         
+        #Difficulty of the game
         if level_time/1000 > 30:
             level_time = 0
             if fall_speed > 0.15:
@@ -408,8 +416,8 @@ def main(win):
         if check_lost(locked_positions):
             if highScore < score:
                 highScore = score
-            
-            with open("/temp/tetris.ser", "wb") as f:
+
+            with open("/tmp/tetris.ser", "wb") as f:
                 pickle.dump(([highScore, paused]), f)
 
             win.fill((0, 0, 0))
@@ -419,6 +427,7 @@ def main(win):
             run = False
 
 
+#Window with the main menu of the game
 def main_menu(win):
     run = True
     while run:
@@ -433,6 +442,7 @@ def main_menu(win):
                 main(win)
 
 
+#Function to build the .exe with the correct assets
 def resource_path(relative_path):
     try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
@@ -441,7 +451,6 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
-
 
 win = pygame.display.set_mode((s_width, s_height))
 pygame.display.set_caption('Tetris')
