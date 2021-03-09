@@ -1,4 +1,5 @@
 import sys
+import os
 import pygame
 import random
 from pygame import draw
@@ -392,6 +393,15 @@ def main_menu(win):
                 run = False
             if event.type == pygame.KEYDOWN:
                 main(win)
+
+def resource_path(relative_path):
+    try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 win = pygame.display.set_mode((s_width, s_height))
 pygame.display.set_caption('Tetris')
