@@ -1,5 +1,6 @@
 # Tetris in Python
 This repository contains all the files and documentation needed to create Tetris .exe not supported on LINUX
+![](https://i.imgur.com/NJxasIb.gif)
 
 # Dependencies
 `pip install pygame`  
