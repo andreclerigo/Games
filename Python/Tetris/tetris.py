@@ -216,8 +216,29 @@ def draw_grid(surface, grid):
             pygame.draw.line(surface, (128,128,128), (sx + j*block_size, sy), (sx + j*block_size, sy + play_height))  #Vertical lines
     
 
+#Delete complete rows
 def clear_rows(grid, locked):
-    pass
+    inc = 0
+    for i in range(len(grid) - 1, -1, -1):  #Loop the row backwards
+        row = grid[i]
+
+        #If the row doesn't contain a black squares
+        if (0, 0, 0) not in row:  
+            inc += 1                #Number of rows going to be deleted
+            ind = i                 
+            for j in range(len(row)):
+                try:
+                    del locked[(j, i)]  #Delete the row
+                except:
+                    continue
+    
+    if inc > 0:  #If a row has been deleted
+        #Sort the locked list by yaxis value and iterate it backwards
+        for key in sorted(list(locked), key=lambda x: x[1])[::-1]:
+            x, y = key
+            if y < ind:
+                newKey = (x, y + inc)
+                locked[newKey] = locked.pop(key)
 
 
 #Draws the next shape outside the playable area so the player can know what's next
@@ -287,7 +308,7 @@ def main(win):
                 run = False
 
             elif event.type == pygame.KEYDOWN:
-                #Python doesn't have switch case? rlly?
+                #Python doesn't have a proprietary switch case structurer -.-
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     current_piece.x -= 1
                     if not(valid_space(current_piece, grid)):
@@ -322,7 +343,7 @@ def main(win):
             current_piece = next_piece
             next_piece = get_shape()
             change_piece = False
-
+            clear_rows(grid, locked_positions)
         
         draw_window(win, grid)
         draw_next_shape(next_piece, win)
