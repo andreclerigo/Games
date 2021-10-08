@@ -1,3 +1,3 @@
 # Games
  
-My repository that will approach various classic games in Java, Python (using pygames) and hopefully C#
+My repository that will approach various classic games in Java, Python (using pygame and guizero) and hopefully C#
