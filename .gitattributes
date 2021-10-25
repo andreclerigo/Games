@@ -1,9 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
-Java/Snake/lib/* linguist-vendored
-Java/Snake/docs/* linguist-vendored
-Java/Snake/docs/resources/* linguist-vendored
-Java/Snake/docs/jquery/* linguist-vendored
-Python/Tetris/assets/* linguist-vendored
-Python/Tetris/build/* linguist-vendored
-Python/Tetris/build/tetris/* linguist-vendored
+Java/Snake/docs/* linguist-detectable=false
+Java/Snake/lib/* linguist-detectable=false
+Python/Tetris/build/* linguist-detectable=false
+Python/Tetris/assets/* linguist-detectable=false
