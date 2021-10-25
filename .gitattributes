@@ -6,5 +6,4 @@ Java/Snake/docs/jquery/* linguist-documentation
 Python/Tetris/build/* linguist-documentation
 Python/Tetris/build/tetris/* linguist-documentation
 Python/EmojiMatch/assets/* linguist-documentation
-Python/EmojiMatch/assets/*.gif linguist-vendored=false
-
+Python/EmojiMatch/assets/* linguist-vendored
