@@ -9,3 +9,4 @@ Python/EmojiMatch/assets/* linguist-documentation
 
 * linguist-vendored
 *.gif linguist-vendored=false
+Python/EmojiMatch/assets/*.gif linguist-vendored=false
